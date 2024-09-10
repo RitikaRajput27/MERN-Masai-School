@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Data Visualizer</title>
+    <style>/* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        #input-container {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        
+        input {
+            margin-bottom: 10px;
+        }
+        
+        button {
+            margin-top: 10px;
+        }
+        
+        .graph {
+            margin-top: 20px;
+        }
+        
+        .bar {
+            height: 30px;
+            color: white;
+            text-align: right;
+            padding-right: 10px;
+            margin-bottom: 5px;
+        }
+        
+        #price-graph .bar {
+            background-color: #4caf50;
+        }
+        
+        #rating-graph .bar {
+            background-color: #2196f3;
+        }
+        </style>
+</head>
+<body>
+    <h1>Product Data Visualizer</h1>
+    
+    <div id="input-container">
+        <label for="product-name">Product Name:</label>
+        <input type="text" id="product-name">
+        
+        <label for="product-price">Price:</label>
+        <input type="number" id="product-price">
+        
+        <label for="product-rating">Rating:</label>
+        <input type="number" id="product-rating" step="0.1" min="0" max="5">
+        
+        <button id="add-product">Add Product</button>
+    </div>
+    
+    <div id="graph-controls">
+        <button id="sort-by-price">Sort by Price</button>
+        <button id="sort-by-rating">Sort by Rating</button>
+    </div>
+    
+    <div id="graphs">
+        <div id="price-graph" class="graph"></div>
+        <div id="rating-graph" class="graph"></div>
+    </div>
+    
+    <script >// script.js
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [];
+            const inputName = document.getElementById('product-name');
+            const inputPrice = document.getElementById('product-price');
+            const inputRating = document.getElementById('product-rating');
+            const addProductButton = document.getElementById('add-product');
+            const sortByPriceButton = document.getElementById('sort-by-price');
+            const sortByRatingButton = document.getElementById('sort-by-rating');
+            const priceGraph = document.getElementById('price-graph');
+            const ratingGraph = document.getElementById('rating-graph');
+        
+            addProductButton.addEventListener('click', () => {
+                const name = inputName.value.trim();
+                const price = parseFloat(inputPrice.value);
+                const rating = parseFloat(inputRating.value);
+        
+                if (name && !isNaN(price) && !isNaN(rating)) {
+                    products.push({ name, price, rating });
+                    updateGraphs();
+                    inputName.value = '';
+                    inputPrice.value = '';
+                    inputRating.value = '';
+                } else {
+                    alert('Please enter valid product data.');
+                }
+            });
+        
+            sortByPriceButton.addEventListener('click', () => {
+                products.sort((a, b) => a.price - b.price);
+                updateGraphs();
+            });
+        
+            sortByRatingButton.addEventListener('click', () => {
+                products.sort((a, b) => a.rating - b.rating);
+                updateGraphs();
+            });
+        
+            function updateGraphs() {
+                priceGraph.innerHTML = '';
+                ratingGraph.innerHTML = '';
+        
+                products.forEach(product => {
+                    const priceBar = document.createElement('div');
+                    priceBar.className = 'bar';
+                    priceBar.style.width = `${product.price * 10}px`;
+                    priceBar.textContent = `${product.name} - $${product.price.toFixed(2)}`;
+                    priceGraph.appendChild(priceBar);
+        
+                    const ratingBar = document.createElement('div');
+                    ratingBar.className = 'bar';
+                    ratingBar.style.width = `${product.rating * 20}px`;
+                    ratingBar.textContent = `${product.name} - ${product.rating.toFixed(1)}`;
+                    ratingGraph.appendChild(ratingBar);
+                });
+            }
+        });
+        </script>
+</body>
+</html>
